@@ -1,0 +1,20 @@
+language: generic
+services:
+  - docker
+
+before_install:
+  - docker build -t lemillion/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker container run --rm -e CI=true lemillion/react-test npm test
+
+after_success:
+  - docker build -t lemillion/fibonacci-client ./client
+  - docker build -t lemillion/fibonacci-nginx ./nginx
+  - docker build -t lemillion/fibonacci-server ./server
+  - docker build -t lemillion/fibonacci-worker ./worker
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push $DOCKER_ID/fibonacci-client
+  - docker push $DOCKER_ID/fibonacci-nginx
+  - docker push $DOCKER_ID/fibonacci-server
+  - docker push $DOCKER_ID/fibonacci-worker
