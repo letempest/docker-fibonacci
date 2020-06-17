@@ -2,7 +2,7 @@ FROM node:alpine
 
 WORKDIR /app
 
-COPY package.json .
+COPY ./package*.json ./
 RUN npm install
 COPY ["package*.json", "index.js", "keys.js", "/app/"]
 CMD ["npm","run", "dev"]
